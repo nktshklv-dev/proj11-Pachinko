@@ -12,6 +12,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var scoreLabel: SKLabelNode!
     var editLabel: SKLabelNode!
     
+    let balls = ["ballBlue", "ballCyan", "ballGreen", "ballGrey", "ballPurple", "ballRed", "ballYellow"]
+    
     var editingMode: Bool = false{
         didSet{
             if editingMode{
@@ -74,17 +76,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if editingMode{
                 let size = CGSize(width: Int(Float.random(in: 32...128)), height: 16)
                 let box = SKSpriteNode(color: UIColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1), size: size)
-                box.zRotation = CGFloat.random(in: -2...2)
+                box.zRotation = CGFloat.random(in: -3...3)
                 box.position = location
                 box.physicsBody = SKPhysicsBody(rectangleOf: box.size)
                 box.physicsBody?.isDynamic = false
                 addChild(box)
             }
             else{
-                let ball = SKSpriteNode(imageNamed: "ballBlue")
+                let ball = SKSpriteNode(imageNamed: balls.randomElement() ?? "ballBlue")
                 ball.physicsBody = SKPhysicsBody(circleOfRadius: ball.size.width / 2)
                 ball.physicsBody!.restitution = 0.5
-                ball.position = location
+                ball.position = CGPoint(x: location.x, y: 760)
                 ball.name = "ball"
                 //collisionDetection
                 ball.physicsBody?.contactTestBitMask = ball.physicsBody?.collisionBitMask ?? 0
