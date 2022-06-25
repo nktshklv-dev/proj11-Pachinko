@@ -23,7 +23,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    
     var score = 0{
         didSet{
             scoreLabel.text = "Score: \(score)"
@@ -43,15 +42,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         editLabel.text = "Edit"
         editLabel.position = CGPoint(x: 80, y: 700)
         addChild(editLabel)
+        
         let background = SKSpriteNode(imageNamed: "background")
         background.position = CGPoint(x: 512, y: 384)
         background.blendMode = .replace
         background.zPosition = -1
         addChild(background)
-        physicsBody = SKPhysicsBody(edgeLoopFrom: frame)
-        physicsWorld.contactDelegate = self
         
-       
+        physicsBody = SKPhysicsBody(edgeLoopFrom: frame)
         
         makeSlot(at: CGPoint(x: 128, y: 0), isGood: true)
         makeSlot(at: CGPoint(x: 384, y: 0), isGood: false)
@@ -76,21 +74,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if editingMode{
                 let size = CGSize(width: Int(Float.random(in: 32...128)), height: 16)
                 let box = SKSpriteNode(color: UIColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1), size: size)
-                box.zRotation = CGFloat.random(in: 0...3)
+                box.zRotation = CGFloat.random(in: -2...2)
                 box.position = location
                 box.physicsBody = SKPhysicsBody(rectangleOf: box.size)
                 box.physicsBody?.isDynamic = false
                 addChild(box)
-                
-                                       
             }
             else{
                 let ball = SKSpriteNode(imageNamed: "ballBlue")
                 ball.physicsBody = SKPhysicsBody(circleOfRadius: ball.size.width / 2)
-                ball.physicsBody!.restitution = 0.4
+                ball.physicsBody!.restitution = 0.5
                 ball.position = location
                 ball.name = "ball"
-                //line 45 lets us to detect collisions
+                //collisionDetection
                 ball.physicsBody?.contactTestBitMask = ball.physicsBody?.collisionBitMask ?? 0
                 addChild(ball)
             }
@@ -115,7 +111,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if isGood{
               slotBase = SKSpriteNode(imageNamed: "slotBaseGood")
               slotGlow = SKSpriteNode(imageNamed: "slotGlowGood")
-            slotBase.name = "good"
+              slotBase.name = "good"
         } else{
             slotBase = SKSpriteNode(imageNamed: "slotBaseBad")
             slotGlow = SKSpriteNode(imageNamed: "slotGlowBad")
@@ -161,6 +157,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         guard let nodeA = contact.bodyA.node else {return}
         guard let nodeB = contact.bodyB.node else {return}
+        
         if nodeA.name == "ball"{
             collision(between: nodeA, object: nodeB)
         } else if nodeB.name == "ball"{
